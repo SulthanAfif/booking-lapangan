@@ -9,6 +9,9 @@ use App\Models\User;
 use Illuminate\Support\Carbon;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Validation\ValidationException;
+use App\Jobs\CancelUnpaidBooking;
+use App\Jobs\SendBookingConfirmation;
+use App\Events\BookingCreated;
 
 class BookingService
 {
@@ -48,7 +51,7 @@ class BookingService
                 ]);
             }
 
-            return Booking::create([
+            $booking = Booking::create([
                 'user_id'     => $user->id,
                 'field_id'    => $field->id,
                 'date'        => $date,
@@ -57,6 +60,11 @@ class BookingService
                 'status'      => BookingStatus::Pending,
                 'total_price' => (int) ceil($hours * $field->price_per_hour),
             ]);
+            SendBookingConfirmation::dispatch($booking);
+            CancelUnpaidBooking::dispatch($booking)->delay(now()->addMinutes(30));
+            broadcast(new BookingCreated($booking))->toOthers();;
+
+            return $booking;
         });
     }
 }
