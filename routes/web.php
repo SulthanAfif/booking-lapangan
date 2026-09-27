@@ -4,7 +4,11 @@ use Illuminate\Support\Facades\Route;
 use App\Http\Controllers\Auth\GoogleController;
 use App\Models\Field;
 
-Route::view('/', 'welcome');
+Route::get('/', function () {
+    return auth()->check()
+        ? redirect()->route('booking.index')
+        : redirect()->route('login');
+});
 
 Route::middleware(['auth'])->group(function () {
     Route::get('/booking', function () {

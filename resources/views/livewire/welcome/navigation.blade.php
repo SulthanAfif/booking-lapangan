@@ -17,6 +17,7 @@ new class extends Component
 }; ?>
 
 <nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+    @auth
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
@@ -113,4 +114,19 @@ new class extends Component
             </div>
         </div>
     </div>
+    @else
+        <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+            <div class="flex justify-end items-center gap-4 h-16">
+                <x-nav-link :href="route('login')" :active="request()->routeIs('login')" wire:navigate>
+                    {{ __('Log in') }}
+                </x-nav-link>
+
+                @if (Route::has('register'))
+                    <x-nav-link :href="route('register')" :active="request()->routeIs('register')" wire:navigate>
+                        {{ __('Register') }}
+                    </x-nav-link>
+                @endif
+            </div>
+        </div>
+    @endauth
 </nav>
