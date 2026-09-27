@@ -16,31 +16,40 @@ new class extends Component
     }
 }; ?>
 
-<nav x-data="{ open: false }" class="bg-white border-b border-gray-100">
+<nav x-data="{ open: false }" class="bg-pitch-900">
     <!-- Primary Navigation Menu -->
     <div class="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div class="flex justify-between h-16">
             <div class="flex">
                 <!-- Logo -->
-                <div class="shrink-0 flex items-center">
-                    <a href="{{ route('dashboard') }}" wire:navigate>
-                        <x-application-logo class="block h-9 w-auto fill-current text-gray-800" />
+                <div class="shrink-0 flex items-center gap-2">
+                    <a href="{{ route('dashboard') }}" wire:navigate class="flex items-center gap-2">
+                        <span class="flex h-8 w-8 items-center justify-center rounded-full bg-flood-400 text-pitch-900 font-display font-bold text-sm">BL</span>
+                        <span class="font-display font-bold text-chalk-50 tracking-tight hidden sm:block">Booking Lapangan</span>
                     </a>
                 </div>
 
                 <!-- Navigation Links -->
-                <div class="hidden space-x-8 sm:-my-px sm:ms-10 sm:flex">
-                    <x-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+                <div class="hidden space-x-1 sm:-my-px sm:ms-10 sm:flex">
+                    @php
+                        $navClass = fn ($active) => $active
+                            ? 'inline-flex items-center px-3 h-16 border-b-2 border-flood-400 text-sm font-medium text-chalk-50'
+                            : 'inline-flex items-center px-3 h-16 border-b-2 border-transparent text-sm font-medium text-chalk-50/60 hover:text-chalk-50 hover:border-chalk-50/30 transition';
+                    @endphp
+                    <a href="{{ route('dashboard') }}" wire:navigate class="{{ $navClass(request()->routeIs('dashboard')) }}">
                         {{ __('Dashboard') }}
-                    </x-nav-link>
+                    </a>
+                    <a href="{{ route('booking.index') }}" wire:navigate class="{{ $navClass(request()->routeIs('booking.*')) }}">
+                        {{ __('Booking') }}
+                    </a>
                 </div>
             </div>
 
             <!-- Settings Dropdown -->
             <div class="hidden sm:flex sm:items-center sm:ms-6">
-                <x-dropdown align="right" width="48">
+                <x-dropdown align="right" width="48" contentClasses="py-1 bg-pitch-800 ring-1 ring-chalk-50/10">
                     <x-slot name="trigger">
-                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-gray-500 bg-white hover:text-gray-700 focus:outline-none transition ease-in-out duration-150">
+                        <button class="inline-flex items-center px-3 py-2 border border-transparent text-sm leading-4 font-medium rounded-md text-chalk-50/80 hover:text-chalk-50 focus:outline-none transition ease-in-out duration-150">
                             <div x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
 
                             <div class="ms-1">
@@ -52,15 +61,13 @@ new class extends Component
                     </x-slot>
 
                     <x-slot name="content">
-                        <x-dropdown-link :href="route('profile')" wire:navigate>
+                        <a href="{{ route('profile') }}" wire:navigate class="block w-full px-4 py-2 text-start text-sm text-chalk-50/80 hover:bg-pitch-700 hover:text-chalk-50 transition">
                             {{ __('Profile') }}
-                        </x-dropdown-link>
+                        </a>
 
                         <!-- Authentication -->
-                        <button wire:click="logout" class="w-full text-start">
-                            <x-dropdown-link>
-                                {{ __('Log Out') }}
-                            </x-dropdown-link>
+                        <button wire:click="logout" class="w-full text-start block px-4 py-2 text-sm text-chalk-50/80 hover:bg-pitch-700 hover:text-chalk-50 transition">
+                            {{ __('Log Out') }}
                         </button>
                     </x-slot>
                 </x-dropdown>
@@ -68,7 +75,7 @@ new class extends Component
 
             <!-- Hamburger -->
             <div class="-me-2 flex items-center sm:hidden">
-                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-gray-400 hover:text-gray-500 hover:bg-gray-100 focus:outline-none focus:bg-gray-100 focus:text-gray-500 transition duration-150 ease-in-out">
+                <button @click="open = ! open" class="inline-flex items-center justify-center p-2 rounded-md text-chalk-50/60 hover:text-chalk-50 hover:bg-pitch-700 focus:outline-none transition duration-150 ease-in-out">
                     <svg class="h-6 w-6" stroke="currentColor" fill="none" viewBox="0 0 24 24">
                         <path :class="{'hidden': open, 'inline-flex': ! open }" class="inline-flex" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
                         <path :class="{'hidden': ! open, 'inline-flex': open }" class="hidden" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12" />
@@ -79,30 +86,36 @@ new class extends Component
     </div>
 
     <!-- Responsive Navigation Menu -->
-    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden">
+    <div :class="{'block': open, 'hidden': ! open}" class="hidden sm:hidden border-t border-pitch-700/60">
         <div class="pt-2 pb-3 space-y-1">
-            <x-responsive-nav-link :href="route('dashboard')" :active="request()->routeIs('dashboard')" wire:navigate>
+            @php
+                $respClass = fn ($active) => $active
+                    ? 'block w-full ps-3 pe-4 py-2 border-l-4 border-flood-400 text-start text-base font-medium text-chalk-50 bg-pitch-800'
+                    : 'block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-chalk-50/60 hover:text-chalk-50 hover:bg-pitch-800 transition';
+            @endphp
+            <a href="{{ route('dashboard') }}" wire:navigate class="{{ $respClass(request()->routeIs('dashboard')) }}">
                 {{ __('Dashboard') }}
-            </x-responsive-nav-link>
+            </a>
+            <a href="{{ route('booking.index') }}" wire:navigate class="{{ $respClass(request()->routeIs('booking.*')) }}">
+                {{ __('Booking') }}
+            </a>
         </div>
 
         <!-- Responsive Settings Options -->
-        <div class="pt-4 pb-1 border-t border-gray-200">
+        <div class="pt-4 pb-1 border-t border-pitch-700/60">
             <div class="px-4">
-                <div class="font-medium text-base text-gray-800" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
-                <div class="font-medium text-sm text-gray-500">{{ auth()->user()->email }}</div>
+                <div class="font-medium text-base text-chalk-50" x-data="{{ json_encode(['name' => auth()->user()->name]) }}" x-text="name" x-on:profile-updated.window="name = $event.detail.name"></div>
+                <div class="font-medium text-sm text-chalk-50/50">{{ auth()->user()->email }}</div>
             </div>
 
             <div class="mt-3 space-y-1">
-                <x-responsive-nav-link :href="route('profile')" wire:navigate>
+                <a href="{{ route('profile') }}" wire:navigate class="block w-full ps-3 pe-4 py-2 border-l-4 border-transparent text-start text-base font-medium text-chalk-50/60 hover:text-chalk-50 hover:bg-pitch-800 transition">
                     {{ __('Profile') }}
-                </x-responsive-nav-link>
+                </a>
 
                 <!-- Authentication -->
-                <button wire:click="logout" class="w-full text-start">
-                    <x-responsive-nav-link>
-                        {{ __('Log Out') }}
-                    </x-responsive-nav-link>
+                <button wire:click="logout" class="w-full text-start block ps-3 pe-4 py-2 border-l-4 border-transparent text-base font-medium text-chalk-50/60 hover:text-chalk-50 hover:bg-pitch-800 transition">
+                    {{ __('Log Out') }}
                 </button>
             </div>
         </div>

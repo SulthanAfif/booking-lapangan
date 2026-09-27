@@ -1,3 +1,15 @@
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
+
+@layer utilities {
+    .slot-booked-pattern {
+        background-image: repeating-linear-gradient(
+            45deg,
+            theme('colors.clay.50'),
+            theme('colors.clay.50') 6px,
+            transparent 6px,
+            transparent 12px
+        );
+    }
+}
